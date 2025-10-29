@@ -1,0 +1,38 @@
+name: ml-projekts
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+  
+permissions: write-all
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: iterative/setup-cml@v2
+      - name: Nepieciešamo bibliotēku instalēšana
+        run: pip install --upgrade pip && pip install -r requirements.txt
+      - name: Koda formatēšana, izmantojot Black Formatter
+        run: black *.py
+      - name: Apmācības palaišana
+        run: python train.py
+      - name: Novērtēšana
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: | 
+          echo "## Modeļa metrikas" > report.md
+          cat metrics.txt >> report.md
+            
+          echo '## Confusion Matrix Plot' >> report.md
+          echo '![Confusion Matrix](model_results.png)' >> report.md
+
+          cml comment create report.md
+      #- name: Augšupieldēt modeli
+      #  uses: actions/upload-artifact@v5.0.0
+      #  with:
+      #    name: modelis
+      #    path: bank_pipeline.skops
