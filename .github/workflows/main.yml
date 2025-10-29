@@ -31,8 +31,8 @@ jobs:
           echo '![Confusion Matrix](model_results.png)' >> report.md
 
           cml comment create report.md
-      #- name: Augšupieldēt modeli
-      #  uses: actions/upload-artifact@v5.0.0
-      #  with:
-      #    name: modelis
-      #    path: bank_pipeline.skops
+      - name: Augšupieldēt modeli
+        uses: actions/upload-artifact@v5.0.0
+        with:
+          name: modelis
+          path: bank_pipeline.skops
